@@ -1,0 +1,41 @@
+doctype 5
+html
+  head
+    title= title
+    script(src='/js/jquery-1.8.3.min.js')
+    script(src='/js/bootstrap.min.js')
+    link(rel='stylesheet', href='/css/flatly.css')
+    link(rel='shortcut icon', href'/img/favicon.ico')
+    style(type='text/css')
+      body {
+        padding-top: 80px;
+        padding-bottom: 40px;
+      }
+  body
+    .navbar 
+      .navbar-fixed-top
+        .navbar-inner
+          .container
+            a(data-toggle='collapse',data-target='.nav-collapse').btn.btn-navbar
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.brand(href="/")
+              |FootBallNode
+            .nav-collapse.collapse#main-menu
+              ul.nav#main-menu-left
+                li
+                  a(href="/News")
+                    |News
+                li
+                  a(href="/Tactics")
+                    |Tactics
+                li
+                  a(href="/Movies")
+                    |Movies
+
+   block content
+
+             
+                 
+               
