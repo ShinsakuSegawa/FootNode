@@ -30,7 +30,9 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/room', room.index);
+app.get('/room', room.entrance);
+app.post('/room/enter', room.enter);
+
 //app.get('/board', board.index); 
 
 var server = http.createServer(app);

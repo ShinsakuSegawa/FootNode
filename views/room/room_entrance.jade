@@ -7,7 +7,7 @@ block content
       .span6
         h2 Create:
         p 部屋を新しく作成する
-        form#new.form-horizontal(action='/room/', method='post')
+        form#new.form-horizontal(action='/room/enter', method='post')
           .control-group
             label.control-label(for='new-room-name') 作成するルーム名
             .controls
@@ -21,16 +21,15 @@ block content
       .span6
         h2 Enter:
         p 既存のルームに入る
-        form#new.form-horizontal(action='/room/', method='post')
+        form#enter.form-horizontal(action='/room/enter', method='post')
          .control-group
            label.control-label(for='new-room-name') 作成するルーム名
            .controls
-             input#new-room(type='text', name='roomName', placeholder='ルーム名を入力...')
-           .control-group
-             label.control-label(for='new-name') 表示するあなたの名前
-             .controls
-               input#new-name(type='text', name='yourName', placeholder='表示名を入力...')
-               button.btn(type='submit', name='mode', value='create') チャットルームを作成
-
+             input#enter-room(type='text', name='roomName', placeholder='ルーム名を入力...')
+         .control-group
+           label.control-label(for='new-name') 表示するあなたの名前
+           .controls
+             input#enter-name(type='text', name='yourName', placeholder='表示名を入力...')
+             button.btn(type='submit', name='mode', value='enter') チャットルームに入る
 
 

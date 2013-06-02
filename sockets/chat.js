@@ -36,6 +36,7 @@ exports.onConnection = function (socket) {
   // コネクションが確立されたら'connected'メッセージを送信する
   socket.emit('connected', {});
 
+  /*
   // 認証情報を確認する
   socket.on('hash password', function (password, fn) {
     var hashedPassword = '';
@@ -48,7 +49,8 @@ exports.onConnection = function (socket) {
     }
     fn(hashedPassword);
   });
-
+  */
+   
   // 認証情報を確認する
   socket.on('check credential', function (client) {
     // クライアントはconnectedメッセージを受信したら、
@@ -103,7 +105,7 @@ exports.onConnection = function (socket) {
     shasum.update('-' + message.roomId);
     message.id = (new Date()).getTime() + '-' + shasum.digest('hex');
     emitToRoom(message.roomId, 'push message', message);
-
+     
   });
 
   // ソケットが切断された場合、ソケット一覧からソケットを削除する
