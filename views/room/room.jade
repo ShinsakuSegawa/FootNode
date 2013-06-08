@@ -1,0 +1,53 @@
+extends ../layout
+block content
+  script(src='/js/room/auth.js')
+  script(src='/js/room/room.js')
+  script
+    var minichat = {
+      roomName: '#{room.name}',
+      userName: '#{user.name}',
+      roomId: '#{room.name}',
+      mode: '#{mode}'
+    };
+
+  #main-contents.container
+    .row
+      .span4
+        h3: span#yourname #{user.name}
+        form
+          label
+            textarea#message.span4(rows='5', placeholder='メッセージを入力...')
+          button#post-message.btn.btn-primary(type='button') メッセージを投稿
+        #members-box
+          h5 チャットメンバー：
+          ul#members
+      .span8
+        #messages.well
+    .row
+      .span12
+        <canvas id="canvas" width="940" height="500"></canvas> 
+        button#clearBtn.btn(type='button') 消去する
+ 
+  // 入室時の確認ダイアログ
+  // パスワードが不正
+  #credentialDialog.modal.hide(data-backdrop='static', keyboard='false')
+    .modal-header
+      h3#credential-dialog-header 入室エラー
+    .modal-body
+      p#credential-dialog-message ルーム情報や名前を再入力してください：
+      form#credential-dialog-form.form-horizontal
+        .control-group
+          label.control-label(for='new-room-name') ルーム名
+          .controls
+            input#new-room(type='text', name='roomName', placeholder='ルーム名を入力...')
+        .control-group
+          label.control-label(for='new-name') 表示するあなたの名前
+          .controls
+            input#new-name(type='text', name='yourName', placeholder='表示名を入力...')
+               
+    .modal-footer
+      a(href='/') トップページへ戻る
+
+  hr
+  footer
+    p room 0.0.1

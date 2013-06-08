@@ -30,11 +30,43 @@ function _formatDate(date) {
 // socket.ioのソケットを管理するオブジェクト
 var socketsOf = {};
 
+// 描画を保存
+var posArray = Array();
+
 // socket.ioのコネクション設定
 exports.onConnection = function (socket) {
 
   // コネクションが確立されたら'connected'メッセージを送信する
   socket.emit('connected', {});
+	 
+	//描画の初期化
+	socket.on('init draw', function(client) {
+		console.log('initialize');
+		socket.get('client', function(err, client) {
+			console.log('first:' + client);
+			if(err || client == undefined) {
+				return;
+			}
+			for(var i=0; i<posArray.length; i++) {
+				emitToRoom(client.roomId, 'push draw', JSON.stringify(posArray[i]));
+			}
+		});
+	});
+
+	socket.on('draw', function(pos) {
+		if(pos == 'cls') {
+			posArray = Array();
+		} else {
+			var obj = JSON.parse(pos);
+			posArray.push(obj);
+		}
+		socket.get('client', function(err, client) {
+			if(err || client == undefined) {
+				return;
+			}
+			emitToRoom(client.roomId, 'push draw', pos);
+		});
+	});
 
   /*
   // 認証情報を確認する
@@ -164,5 +196,6 @@ exports.onConnection = function (socket) {
       });
     });
   });
+
 };
 

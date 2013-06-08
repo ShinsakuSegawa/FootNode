@@ -1,0 +1,13 @@
+extends layout
+ 
+block content
+  script(src='/js/paint.js')
+  link(rel='stylesheet', href='/css/canvas.css') 
+   
+  #main-contents
+    .container
+      <canvas id="canvas" width="940" height="500"></canvas> 
+         
+      button#clearBtn.btn(type='button') 消去する
+      .span8
+   

@@ -7,9 +7,10 @@ var express = require('express')
   , routes = require('./routes')
   , room = require('./routes/room.js')
   , board = require('./routes/board')
+	, paint = require('./routes/paint.js')
   , http = require('http')
   , path = require('path')
-  , chatsockets = require('./sockets/chat.js');
+  , roomsockets = require('./sockets/room.js');
 
 var app = express();
 
@@ -32,6 +33,8 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/room', room.entrance);
 app.post('/room/enter', room.enter);
+app.get('/paint', paint.index);
+room
 
 //app.get('/board', board.index); 
 
@@ -43,4 +46,4 @@ server.listen(app.get('port'), function(){
 });
 
 // socket.ioのコネクション設定
-io.sockets.on('connection', chatsockets.onConnection);
+io.sockets.on('connection', roomsockets.onConnection);
