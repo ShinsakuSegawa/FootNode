@@ -1,0 +1,21 @@
+extends ../layout
+block content 
+	.container
+		.row
+			.span8
+				table
+					tr
+						th ID
+						th youtube_id
+						th youtube_url
+						th created_at
+					tr 
+						each row in movies
+							tr 
+								td= row.id
+								td= row.youtube_id
+								td= row.url
+								td= row.created_at
+							tr
+			.span4
+				a#newMovie.btn(type='button', href='/movies/new')動画を追加する

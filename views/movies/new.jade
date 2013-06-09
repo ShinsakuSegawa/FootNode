@@ -1,0 +1,16 @@
+extends ../layout
+block content
+  .container 
+    div.row
+      form.form-horizontal(action='/movies', method='POST')
+        .control-group
+          label.control-label(for='youtube_id') youtube動画のID
+          .controls
+            input#youtube_id(type='text', name='youtube_id', placeholder='youtube_IDを入力...')
+               
+        .control-group
+          label.control-label(for='youtube_url') youtube動画のURL
+          .controls
+            input#youtube_url(type='text', name='youtube_url', placeholder='動画のURLを入力...')
+               
+        button.btn(type='submit') 動画を登録
