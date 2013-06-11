@@ -8,7 +8,7 @@ var express = require('express')
   , room = require('./routes/room.js')
   , board = require('./routes/board')
 	, paint = require('./routes/paint.js')
-	, movies = require('./routes/movies.js')
+	, videos = require('./routes/videos.js')
   , http = require('http')
   , path = require('path')
   , roomsockets = require('./sockets/room.js');
@@ -33,9 +33,9 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/room', room.entrance);
-app.get('/movies', movies.index);
-app.post('/movies', movies.index);
-app.get('/movies/new', movies.newMovie);   
+app.get('/videos', videos.index);
+app.post('/videos', videos.index);
+app.get('/videos/new', videos.newMovie);   
 app.post('/room/enter', room.enter);
 app.get('/paint', paint.index);
 

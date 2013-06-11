@@ -1,0 +1,30 @@
+extends ../layout
+
+block content 
+	script
+		var videos = '#{videos}'; 
+	
+	.container
+		.row
+			.span8
+				table.table-bordered
+					tr
+						th ID
+						th youtube_id
+						th youtube_url
+						th created_at
+					tr 
+						each row in videos
+							tr 
+								td= row.id
+								td= row.youtube_id
+								td= row.youtube_url
+								td= row.created_at
+							tr
+			.span4
+				a#newMovie.btn(type='button', href='/videos/new')動画を追加する
+		script(src="js/videos/youtube_test.js")
+		script(src="js/videos/index.js")
+		.row
+			span4
+				<iframe id="ytplayer" type="text/html" src="https://www.youtube.com/embed/v6kEtyvau_k" frameborder="0" allowfullscreen>
