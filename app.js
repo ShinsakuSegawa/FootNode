@@ -6,7 +6,7 @@
 var express = require('express')
   , routes = require('./routes')
   , room = require('./routes/room.js')
-  , board = require('./routes/board')
+  , tactics = require('./routes/tactics.js')
 	, paint = require('./routes/paint.js')
 	, videos = require('./routes/videos.js')
   , http = require('http')
@@ -33,6 +33,7 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/room', room.entrance);
+app.get('/tactics', tactics.index);
 app.get('/videos', videos.index);
 app.post('/videos', videos.index);
 app.get('/videos/new', videos.newMovie);   

@@ -26,7 +26,7 @@ exports.index = function(req, res) {
 	});
 };
 
-//新規に動画を追加画面
+// 新規に動画を追加画面
 exports.newMovie = function(req, res) {
 	res.render('videos/new', {title: 'FootballNode -add_movie'});
 }

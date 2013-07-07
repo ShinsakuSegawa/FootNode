@@ -1,0 +1,11 @@
+extends ../layout
+
+block content 
+  script(src='/js/board/Player.js')
+  script(src='/js/board/Board.js')
+  script(src='/js/board/play.js')
+ 
+  .container  
+    div#fdiv
+      <canvas id="field" width="940" height="600"></canvas>
+    button#addPlayer プレイヤーの追加
