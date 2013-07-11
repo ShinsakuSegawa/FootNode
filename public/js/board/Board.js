@@ -1,19 +1,21 @@
 /**
- * 戦略ボードオブジェクト
- **/
+* 戦略ボードオブジェクト
+**/
 // プレイヤータイプ
 const PLAYER_HOME = 0;
 const PLAYER_AWAY = 1;
 
 
 /**
- * Boardコンストラクタ
- * {canvas context} ctx : 処理対象のcontext
- * {int} w : 表示領域の幅
- * {object} player : 
- **/
-var Board = function(ctx, w, h, cvdivx, cvdivy) {
+* Boardコンストラクタ
+* {canvas context} ctx : 処理対象のcontext
+* {int} w : 表示領域の幅
+* {object} player : 
+**/
+
+var Board = function(ctx, w, h, cvdivx, cvdivy, $cvdiv) {
 	this.ctx = ctx; // 処理対象context
+	this.$cvdiv = $cvdiv;
 	this.grSep = 30;  // グリッド間隔(px)
 	this.grSephf = this.grSep / 2;  // グリッド間隔の半分
 	this.grWidth = 1; // グリッド線の太さ
@@ -22,7 +24,7 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 	this.grYAr = []; // グリッドのY座標を格納した配列
 	this.grBcv = false; // canvasの下端がグリッドと重なるならtrue
 
-	var area = {w:w, h:h};  // 表示エリア
+	this.area = {w:w, h:h};  // 表示エリア
 	var players = []; // 駒(player)格納配列
 
 	// ドラッグ状態を保持するオブジェクト
@@ -42,12 +44,12 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 
 	/* グリッド座標計算 */
 	var gcntx = 0;  // 縦線本数
-	if (area.w % this.grSep) {
-		gcntx = Math.floor(area.w / this.grSep);
-		 
+	if (this.area.w % this.grSep) {
+		gcntx = Math.floor(this.area.w / this.grSep);
+
 	} else {
 		// canvasの右端がグリッドと重なる場合
-		gcntx = area.w / this.grSep - 1;
+		gcntx = this.area.w / this.grSep - 1;
 		this.grRcv = true;
 	}
 	for (var i = 0; i < gcntx; i++) {
@@ -55,17 +57,17 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 	}
 
 	var gcnty = 0;  // 横線本数
-	if (area.h % this.grSep) {
+	if (this.area.h % this.grSep) {
 		gcnty = Math.floor(area.h / this.grSep);
 	} else {
 		// canvasの下端がグリッドと重なる場合
-		gcnty = area.h / this.grSep - 1;
+		gcnty = this.area.h / this.grSep - 1;
 		this.grBcv = true;
 	}
 	for (var i = 0; i < gcnty; i++) {
 		this.grYAr[i] = this.grSep * (i + 1);
 	}
-	
+
 	// プレイヤーを初期化する 
 	Board.prototype.initPlayers = function() {
 		players = [];
@@ -75,23 +77,21 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 
 
 	/**
-	 * プレイヤーの追加
-	 *
-	 **/
+	* プレイヤーの追加
+	*
+	**/
 	Board.prototype.addPlayers = function(type) {
 		players.push(new Player(this.grSephf * 2, this.grSephf * 2, type));
-
 		this.drawField();
-		
 	}
 
 	/**
-	 * ボードをクリアする
-	 * return なし
-	 **/
+	* ボードをクリアする
+	* return なし
+	**/
 	Board.prototype.clearField = function() {
 		// 画面をクリア
-		this.ctx.clearRect(0, 0, area.w, area.h);
+		this.ctx.clearRect(0, 0, this.area.w, this.area.h);
 		// グリッド表示
 		this.ctx.save();
 		this.ctx.globalAlpha = 0.5;
@@ -100,13 +100,13 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 		for (var i = 0; i < this.grXAr.length; i++) {
 			this.ctx.beginPath();
 			this.ctx.moveTo(this.grXAr[i], 0);
-			this.ctx.lineTo(this.grXAr[i], area.h);
+			this.ctx.lineTo(this.grXAr[i], this.area.h);
 			this.ctx.stroke();
 		}
 		for (var i = 0; i < this.grYAr.length; i++) {
 			this.ctx.beginPath();
 			this.ctx.moveTo(0,this.grYAr[i]);
-			this.ctx.lineTo(area.w, this.grYAr[i]);
+			this.ctx.lineTo(this.area.w, this.grYAr[i]);
 			this.ctx.stroke();
 		}
 		this.ctx.restore();
@@ -117,9 +117,9 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 	this.PI2 = Math.PI * 2; // 2π
 
 	/**
-	 * ボードを初期化
-	 * return なし
-	 */
+	* ボードを初期化
+	* return なし
+	*/
 	Board.prototype.drawField = function() {
 		// 画面を初期化
 		this.clearField();
@@ -130,21 +130,21 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 					this.drawHome(players[i].x, players[i].y);
 					break;
 				}
-				case this.PLAYER_AWAY: {
-					this.drawAWAY(players[i].x, players[i].y);
-					break;
-				}
+			case this.PLAYER_AWAY: {
+				this.drawAWAY(players[i].x, players[i].y);
+				break;
+			}
 			}
 		}
 	};
 
 	/**
-	 * アイテムの座標をグリッドの中央にセット
-	 * {int} index 対象アイテムのthis.itemArのindex
-	 * {int} x 現在の中心x座標
-	 * {int} y 現在の中心y座標
-	 * return なし
-	 **/
+	* アイテムの座標をグリッドの中央にセット
+	* {int} index 対象アイテムのthis.itemArのindex
+	* {int} x 現在の中心x座標
+	* {int} y 現在の中心y座標
+	* return なし
+	**/
 	Board.prototype.setCenter = function(index, x, y) {
 		// 現在の座標がCanvas外の場合は、端のグリッドにセット
 		var gidx = Math.floor(x / board.grSep);  // グリッド配列のindex
@@ -160,6 +160,7 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 			players[index].x = board.grXAr[board.grXAr.length - 1] + board.grSephf;
 		}
 
+ 
 		gidx = Math.floor(y / board.grSep);
 		if (gidx < 0 ) {
 			gidx = 0;
@@ -175,11 +176,11 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 	};
 
 	/** 
-	 * ホーム側の駒 this.grSep - 2 の円を描く
-	 * {int} x 中心のx座標
-	 * {int} y 中心のy座標
-	 * return なし
-	 **/
+	* ホーム側の駒 this.grSep - 2 の円を描く
+	* {int} x 中心のx座標
+	* {int} y 中心のy座標
+	* return なし
+	**/
 	Board.prototype.drawHome = function(x,y) {
 		this.ctx.save();
 		this.ctx.fillStyle = 'green';
@@ -190,11 +191,11 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 	};
 
 	/** 
-	 * AWAY側の駒 this.grSep - 2 の円を描く
-	 * {int} x 中心のx座標
-	 * {int} y 中心のy座標
-	 * return なし
-	 **/
+	* AWAY側の駒 this.grSep - 2 の円を描く
+	* {int} x 中心のx座標
+	* {int} y 中心のy座標
+	* return なし
+	**/
 	Board.prototype.drawAWAY = function(x,y) {
 		this.ctx.save();
 		this.ctx.fillStyle = 'blue';
@@ -205,11 +206,11 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 	};
 
 	/**
-	 * アイテムが指定した座標内にあるか判定
-	 * {int} x x座標
-	 * {int} y y座標
-	 * return アイテムがあればplayersのindex アイテムが無ければnull
-	 **/
+	* アイテムが指定した座標内にあるか判定
+	* {int} x x座標
+	* {int} y y座標
+	* return アイテムがあればplayersのindex アイテムが無ければnull
+	**/
 	Board.prototype.checkItem = function(x, y) {
 		var rtn = null;
 		for (var i = 0; i < players.length; i++) {
@@ -222,69 +223,95 @@ var Board = function(ctx, w, h, cvdivx, cvdivy) {
 		}
 		return rtn;
 	};
-	
-	/* Canvasでmousedown時に行われる処理
-	 * {event} evt イベントオブジェクト
-	 * return なし
-	 */
-	Board.prototype.cvmsDown = function(evt) {
-		if (!board.drag.now) {
+
+	Board.prototype.setEvents = function() {
+		// Boardオブジェクトを保持
+		var self = this;
+		console.log(self);
+		this.$cvdiv.mousedown(function(e){
+			return self.mouseDown(e, self);
+		});
+		this.$cvdiv.mouseup(function(e) {
+			return self.mouseUp(e, self);
+		});
+		this.$cvdiv.mousemove(function(e) {
+			return self.mouseMove(e, self);
+		});
+	}
+
+	/**
+	 * キャンバス上のマウス押下時の処理
+	 * 押下時にアイテムが存在するかチェック
+	 * 存在するならばdragを変更
+	 **/
+	Board.prototype.mouseDown = function(event, self) {
+		if (!self.drag.now) {
 			// ポインタ座標をCanvas座標へ変換
-			var cx = evt.pageX - cvdivx;
-			var cy = evt.pageY - cvdivy;
+			var cx = event.pageX - self.cvpos.x;
+			var cy = event.pageY - self.cvpos.y;
 			// ポインタ座標内にドラッグ可能なアイテムがあるかチェック
-			var playerIdx = board.checkItem(cx, cy);
+			var playerIdx = self.checkItem(cx, cy);
 
 			if (playerIdx != null) {
-				board.drag.now = true;
-				board.drag.player = playerIdx;
+				self.drag.now = true;
+				self.drag.player = playerIdx;
 			}
 		}
 		return false;
 	};
 
-	/* Canvasでmouseup/mouseleave時に行われる処理
-	 * {event} evt イベントオブジェクト
-	 * return なし
-	 */
-	Board.prototype.cvmsUp = function(evt) {
-		if (board.drag.now) {
+	/**
+	 * マウスアップ時の処理
+	 * 駒を中心に持ってくる
+	 **/
+	Board.prototype.mouseUp = function(event, self) {
+		if (self.drag.now) {
 			// ポインタ座標をCanvas座標へ変換
-			var cx = evt.pageX - cvdivx;
-			var cy = evt.pageY - cvdivy;
+			var cx = event.pageX - self.cvpos.x;
+			var cy = event.pageY - self.cvpos.y;
 			if (cx < 0) cx = 0;
-			if (cx > area.w) cx = area.w;
+			if (cx > self.area.w) cx = self.area.w;
 			if (cy < 0) cy = 0;
-			if (cy > area.h) cy = area.h;
+			if (cy > self.area.h) cy = self.area.h;
 			// アイテムの座標をグリッドの中央にセット
-			board.setCenter(board.drag.player, cx, cy);
+			board.setCenter(self.drag.player, cx, cy);
 			// 画面更新
-			board.drawField();
-			board.drag.now = false;
-			board.drag.player = null;
+			self.drawField();
+			self.drag.now = false;
+			self.drag.player = null;
 		}
-	};
-
-	/* Canvasでmousemove時に行われる処理
-	 * {event} evt イベントオブジェクト
-	 * return なし
-	 */
-	Board.prototype.cvmsMove = function(evt) {
-		if (board.drag.now) {
+	}
+	
+	/**
+	 * マウス移動時時の処理、駒が1px動いたら再描画
+	 **/
+	Board.prototype.mouseMove = function(event, self) {
+		if (self.drag.now) {
 			// ポインタ座標をCanvas座標へ変換
-			var cx = evt.pageX - cvdivx;
-			var cy = evt.pageY - cvdivy;
+			var cx = event.pageX - self.cvpos.x;
+			var cy = event.pageY - self.cvpos.y;
 			// 画面更新するか判定
 			var updSep = 1; // 何px動いたら画面更新するか
-			if (Math.abs(cx - players[board.drag.player].x) >= updSep ||
-				Math.abs(cy - players[board.drag.player].y) >= updSep) {
+			if (Math.abs(cx - players[self.drag.player].x) >= updSep || Math.abs(cy - players[self.drag.player].y) >= updSep) {
 				// アイテムの座標更新
-				players[board.drag.player].x = cx;
-				players[board.drag.player].y = cy;
+				players[self.drag.player].x = cx;
+				players[self.drag.player].y = cy;
 				// 画面更新
-				board.drawField();
+				self.drawField();
 			}
 		}
 		return false;
+	};
+
+	/**
+	 * socketコネクションの設定
+	 *
+	 */
+	Board.prototype.setConnection = function() {
+		//console.log(io.connect);
+		this.socket = io.connect('http://localhost');
+
+		console.log(this.socket);
+		//console.log(this.socket);
 	};
 }
